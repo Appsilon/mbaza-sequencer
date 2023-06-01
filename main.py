@@ -3,14 +3,14 @@ from datetime import datetime
 from pandarallel import pandarallel
 from pathlib import Path
 from time import time
-from src.mbaza_sequence import utils
+from mbaza_sequencer import utils
 
 pandarallel.initialize(progress_bar=True)
 
 
 start_time = time()
 base_data_path = Path("/home/andrew/data/2018/01_10_2018/Corridor 1/A")
-csv_path = Path("/home/andrew/mbaza-sequence/classification_result_2023-06-01_11-51-33.csv")
+csv_path = Path("/home/andrew/mbaza-sequencer/classification_result_2023-06-01_11-51-33.csv")
 
 df = pd.read_csv(csv_path)
 print(f"Total images to process: {df.shape[0]}")
@@ -30,6 +30,7 @@ df = utils.combine_sequence_predictions(df)
 df = df.filter(regex="sequence*|" + "|".join(csv_columns))
 
 print(
+    "--------------------------------",
     "Sequence output snippet",
     "--------------------------------",
     df.filter(regex="timestamp|sequence*|pred_1|score_1").head(20),
@@ -41,6 +42,7 @@ print(
     f"Max images per sequence {df['sequence'].value_counts().max()}",
     "--------------------------------",
     f"Time taken: {time() - start_time:.2f}s",
+    "--------------------------------",
     sep="\n"
 )
 
