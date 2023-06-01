@@ -73,6 +73,9 @@ def get_exif_data(path: Path):
 
     exif = Image.open(path)._getexif()
 
+    if exif is None:
+        raise ValueError(f"No exif data found for file: {path}")
+
     data = {
         "width": exif[40962],
         "height": exif[40963],
