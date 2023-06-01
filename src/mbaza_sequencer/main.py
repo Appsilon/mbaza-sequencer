@@ -25,7 +25,7 @@ def process(settings: Settings):
     df["timestamp"] = exif_df["timestamp"].map(lambda x: datetime.strptime(x, "%Y:%m:%d %H:%M:%S"))
     df["dir_path"] = full_paths.map(lambda x: x.parent)
 
-    df = utils.sequenize(df, max_seq_len=settings.max_seq, max_image_delay=settings.max_delay)
+    df = utils.sequenize(df, max_seq_len=settings.max_images, max_image_delay=settings.max_delay)
     df = utils.combine_sequence_predictions(df)
 
     # Output original columns + new sequence columns
@@ -52,9 +52,9 @@ def process(settings: Settings):
 
 def main():
     parser = argparse.ArgumentParser(description="Convert Mbaza image predictions to sequence predictions")
-    parser.add_argument("csv_path", type=Path, help="Path to output Mbaza csv")
-    parser.add_argument("image_path", type=Path, help="Path to images (as supplied to Mbaza)")
-    parser.add_argument("--max_seq", type=int, help="Maximum number of images per sequence", default=float("inf"))
+    parser.add_argument("csv_path", type=Path, help="Path to csv output from Mbaza")
+    parser.add_argument("image_path", type=Path, help="Path to images (same as supplied to Mbaza)")
+    parser.add_argument("--max_images", type=int, help="Maximum number of images per sequence", default=float("inf"))
     parser.add_argument("--max_delay", type=float, help="Maximum image-to-image delay (seconds) before a new sequence is defined", default=3.)
 
     args = parser.parse_args()
@@ -62,7 +62,7 @@ def main():
     settings = Settings(
         csv_path=args.csv_path,
         image_path=args.image_path,
-        max_seq=args.max_seq,
+        max_images=args.max_images,
         max_delay=args.max_delay
     )
 

@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from pandarallel import pandarallel
 from PIL import Image
-from tqdm import tqdm
 from scipy.stats import gmean
+from uuid import uuid4
 
 
 def get_pred_cols(df: pd.DataFrame):
@@ -84,7 +83,6 @@ def get_exif_data(path: Path):
 
     return data
 
-from uuid import uuid4
 
 def sequenize(df: pd.DataFrame, max_seq_len: float = float("inf"), max_image_delay: float = 5.):
 
@@ -118,27 +116,3 @@ def sequenize(df: pd.DataFrame, max_seq_len: float = float("inf"), max_image_del
     seq_df["sequence"] = pd.factorize(seq_df["sequence"])[0]
     
     return seq_df
-
-    # reconstruct = []
-    # seq_num, seq_id = 0, 0
-    # for _, group in tqdm(df.groupby("dir_path"), desc="Sequencing groups"):
-        
-    #     for index, row in group.iterrows():
-
-    #         if (
-    #             index == group.index[0]
-    #             or seq_id == max_seq_len - 1
-    #             or abs(row["time_diff"]) > max_image_delay
-    #             ):
-
-    #             seq_id = 0
-    #             seq_num += 1
-    #         else:
-    #             seq_id += 1
-
-    #         group.loc[index, "sequence_num"] = seq_num
-    #         group.loc[index, "sequence_id"] = seq_id
-
-    #     reconstruct.append(group)
-
-    return pd.concat(reconstruct)
