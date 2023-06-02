@@ -107,6 +107,7 @@ def sequenize(df: pd.DataFrame, max_seq_len: float = float("inf"), max_image_del
 
         return group
 
+    print("\nSequencing images ...")
     # Sort by folder and timestamp, then calculate time between images
     df = df.sort_values(by=["dir_path", "timestamp"])
     df["time_diff"] = df.groupby("dir_path")["timestamp"].diff().dt.total_seconds()
