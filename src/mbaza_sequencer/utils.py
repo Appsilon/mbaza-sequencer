@@ -55,7 +55,8 @@ def combine_sequence_predictions(df: pd.DataFrame):
 
     combined_preds = {}
     for n, group in df.groupby("sequence"):
-        combined_preds[n] = gmean(group[pred_cols])
+        vals = gmean(group[pred_cols])
+        combined_preds[n] = vals / vals.sum()
 
     combined_preds = pd.DataFrame(combined_preds, index=pred_cols).transpose()
     
