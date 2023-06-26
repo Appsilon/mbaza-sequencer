@@ -50,8 +50,6 @@ def get_top_k_predictions(df: pd.DataFrame, k: int = 3):
 def combine_sequence_predictions(df: pd.DataFrame):
 
     pred_cols = get_pred_cols(df)
-    # One-liner throws a strange error
-    # combined_preds = df.groupby("sequence")[pred_cols].apply(gmean)
 
     combined_preds = {}
     for n, group in df.groupby("sequence"):
@@ -63,8 +61,9 @@ def combine_sequence_predictions(df: pd.DataFrame):
     # Merging and indexing to directly replace new prediction columns and preserve order
     df[pred_cols] = df.merge(combined_preds, left_on="sequence", right_index=True, suffixes=("_DROP", ""))[pred_cols]
     
-    # Need to reset top k scores
+    # Need to reset top k scores and labels
     df = get_top_k_predictions(df)
+    df["label"] = df["pred_1"]
 
     return df
 
