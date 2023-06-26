@@ -4,11 +4,18 @@ import pandas as pd
 from datetime import datetime
 from pandarallel import pandarallel
 from pathlib import Path
+from pydantic import BaseModel, FilePath, DirectoryPath
 from time import time
 from mbaza_sequencer import utils
-from mbaza_sequencer.config import Settings
 
 pandarallel.initialize(progress_bar=True)
+
+
+class Settings(BaseModel):
+    csv_path: FilePath
+    image_path: DirectoryPath
+    max_images: float = float("inf")
+    max_delay: float = 3.
 
 
 def process(settings: Settings):
