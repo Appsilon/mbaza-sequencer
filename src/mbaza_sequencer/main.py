@@ -37,7 +37,7 @@ def process(settings: Settings):
         df["timestamp"] = exif_df["timestamp"]
         df["dir_path"] = full_paths.map(lambda x: x.parent)
 
-    df["timestamp"] = df["timestamp"].map(lambda x: datetime.strptime(x, "%Y:%m:%d %H:%M:%S"))
+    df["timestamp"] = df["timestamp"].map(lambda x: datetime.strptime(x.replace("-", ":"), "%Y:%m:%d %H:%M:%S"))
     df = utils.sequenize(df, max_seq_len=settings.max_images, max_image_delay=settings.max_delay)
     df = utils.combine_sequence_predictions(df)
 
