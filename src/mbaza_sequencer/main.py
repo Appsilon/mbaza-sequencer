@@ -27,15 +27,15 @@ def process(settings: Settings):
     csv_columns = list(df.columns)
 
     df["timestamp"] = df["timestamp"].replace(" ", np.nan)
+    full_paths = df["location"].map(lambda x: settings.image_path / x)
+    df["dir_path"] = full_paths.map(lambda x: x.parent)
 
     if df["timestamp"].isna().any():
         print("\nExtracting timestamps from images ...")
-        full_paths = df["location"].map(lambda x: settings.image_path / x)
         exif_data = full_paths.parallel_map(lambda x: utils.get_exif_data(x))
         exif_df = exif_data.apply(pd.Series)
 
         df["timestamp"] = exif_df["timestamp"]
-        df["dir_path"] = full_paths.map(lambda x: x.parent)
 
     df["timestamp"] = df["timestamp"].map(lambda x: datetime.strptime(x.replace("-", ":"), "%Y:%m:%d %H:%M:%S"))
     df = utils.sequenize(df, max_seq_len=settings.max_images, max_image_delay=settings.max_delay)
